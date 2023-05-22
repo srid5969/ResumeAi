@@ -2,20 +2,18 @@ import {injectable} from "@leapjs/common";
 @injectable()
 export class NameExtract {
 	extractNameFromText(text: string) {
+		// const namePattern = /\b[A-Z]+\b/;
+		const namePattern = /\b[A-Z][a-zA-Z\s]+/; // Pattern to match the name
 
-		// Regular expression pattern to match a name
-		const nameRegex = /([A-Z][a-z]+)\s+([A-Z][a-z]+)/;
+		const matches = text.match(namePattern);
 
-		// Check if the extracted text matches the name pattern
-		const match = text.match(nameRegex);
-		if (match) {
-			const firstName = match[1];
-			const lastName = match[2];
-			console.log("First Name: " + firstName);
-			console.log("Last Name: " + lastName);
-			return {firstName,lastName}
+		if (matches && matches.length > 0) {
+			const name = matches[0].trim();
+			const lines = name.split("\n");
+			const t: any = lines.shift();
+			return t.trim();
 		} else {
-			return ("No name found");
+			return "Name not found";
 		}
 	}
 }

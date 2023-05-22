@@ -12,7 +12,6 @@ export class ResumeAiController {
 	@UseBefore(upload.single("resume"))
 	@Post("/files")
 	public async postResume(@Req() req: any, @File({}, "resume") file: any, @Res() res: Response): Promise<Response> {
-		console.log(file);
 		return res.send(await this.service.getDetailsFromPdf(file.buffer));
 	}
 }

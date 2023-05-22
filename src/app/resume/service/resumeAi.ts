@@ -6,6 +6,7 @@ import {MobileNumberFinder} from "app/resume/lib/phoneNumberFinder/phoneNumberFi
 import {AddressFinderService} from "app/resume/lib/addressFinder/addressFinderLib";
 import { NameExtract } from "app/resume/lib/nameFinder/getName";
 import { SkillFinder } from "app/resume/lib/skillTextFinder/findSkill";
+import { Summarizer } from '../lib/summarizer/summarizer';
 
 @injectable()
 export class ResumeService {
@@ -19,6 +20,9 @@ export class ResumeService {
 	private readonly addressExtractLib!: AddressFinderService;
 	@inject(SkillFinder)
 	private readonly skillExtractLib!: SkillFinder;
+	@inject(Summarizer)
+	private readonly skillSummarizeLib!: Summarizer;
+	
 
 	/**
 	 * @param file 
@@ -37,11 +41,13 @@ export class ResumeService {
 		//read pdf
 		const text		 = await this.readPDF(pdf);
 		//get name from text
-		const name 		 = await this.nameExtractLib.extractNameFromText(text);
-		const email		 = await this.emailExtractLib.extractEmailFromText(text);
-		const number	 = await this.numberExtractLib.extractMobileNumberFromText(text);
-		const address	 = await this.addressExtractLib.extractAddressFromText(text);
-		const skill		 = await this.skillExtractLib.extractSkillsFromText(text)
-		return {name, email, number, address,skill};
+		const name 		 = await this.nameExtractLib    .extractNameFromText(text);
+		const email		 = await this.emailExtractLib   .extractEmailFromText(text);
+		const number	 = await this.numberExtractLib  .extractMobileNumberFromText(text);
+		const address	 = await this.addressExtractLib .extractAddressFromText(text);
+		const skill		 = await this.skillExtractLib   .extractSkillsFromText(text)
+		const summary    = await this.skillSummarizeLib .summarizeUsingSkillPoints(skill)
+		//summarize using skill points
+		return {name, email, number, address,skill,summary};
 	}
 }
